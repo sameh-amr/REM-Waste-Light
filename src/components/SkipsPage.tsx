@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { useSkips } from '../hooks/useSkips';
-import SkipsList from './SkipsList';
-import { Skip } from '../types/skip';
-import { Loader2, Truck, AlertTriangle, Info } from 'lucide-react';
+import React, { useState } from "react";
+import { useSkips } from "../hooks/useSkips";
+import SkipsList from "./SkipsList";
+import { Skip } from "../types/skip";
+import { Loader2, Truck, AlertTriangle, Info } from "lucide-react";
 
 const SkipsPage: React.FC = () => {
-  const { skips, loading, error } = useSkips('NR32', 'Lowestoft');
+  const { skips, loading, error } = useSkips("NR32", "Lowestoft");
   const [selectedSkip, setSelectedSkip] = useState<Skip | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
 
   const handleSelectSkip = (skip: Skip) => {
     setSelectedSkip(skip);
-    window.alert(`You've selected a ${skip.size} yard skip. In a real app, this would proceed to the next step.`);
+    setNotification(
+      `You've selected a ${skip.size} yard skip. In a real app, this would proceed to the next step.`
+    );
   };
 
   return (
@@ -35,7 +38,9 @@ const SkipsPage: React.FC = () => {
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-indigo-400 rounded-full" />
-                  <span>Measure your waste volume to determine the ideal skip size</span>
+                  <span>
+                    Measure your waste volume to determine the ideal skip size
+                  </span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-indigo-400 rounded-full" />
@@ -43,7 +48,9 @@ const SkipsPage: React.FC = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-indigo-400 rounded-full" />
-                  <span>Check if you need heavy waste disposal capabilities</span>
+                  <span>
+                    Check if you need heavy waste disposal capabilities
+                  </span>
                 </li>
               </ul>
             </div>
@@ -62,17 +69,34 @@ const SkipsPage: React.FC = () => {
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="w-8 h-8 text-indigo-400 animate-spin" />
-            <span className="ml-3 text-lg text-gray-400">Loading available skips...</span>
+            <span className="ml-3 text-lg text-gray-400">
+              Loading available skips...
+            </span>
           </div>
         ) : (
           <>
             <SkipsList skips={skips} onSelectSkip={handleSelectSkip} />
-            
+
             <div className="mt-12 text-center text-sm text-gray-400">
-              <p>All prices include VAT and standard {skips[0]?.hire_period_days || 14} day hire period</p>
+              <p>
+                All prices include VAT and standard{" "}
+                {skips[0]?.hire_period_days || 14} day hire period
+              </p>
               <p>Delivery and collection included in the displayed prices</p>
             </div>
           </>
+        )}
+
+        {notification && (
+          <div className="fixed top-6 left-1/2 transform -translate-x-1/2 bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg z-50 transition-all">
+            {notification}
+            <button
+              className="ml-4 text-indigo-200 hover:text-white font-bold"
+              onClick={() => setNotification(null)}
+            >
+              ×
+            </button>
+          </div>
         )}
       </div>
     </div>
